@@ -1,25 +1,30 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Header from '../src/components/header/header';
+
+import { Route, Switch, Redirect } from 'react-router-dom';
+import HomePage from './pages/home';
+import ProjectPage from './pages/project';
+import Footer from "./components/footer/footer";
+
+class App extends React.Component {
+    render() {
+        return (
+            <div className='app'>
+                <Header brand='Финансовый агрегатор'/>
+
+                <main className='main'>
+                    <Switch>
+                        <Route path='/region/:code' component={ProjectPage} />
+                        <Route exact path='/' component={HomePage} />
+                        <Redirect to='/' />
+                    </Switch>
+                    <Footer footerInfo='ВКР'/>
+                </main>
+            </div>
+        );
+    }
 }
 
 export default App;

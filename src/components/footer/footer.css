@@ -1,0 +1,20 @@
+.footer {
+    height: 60px;
+    background-color: darkcyan;
+    color: white;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.footer-info {
+    font-size: 24px;
+    padding: 5%;
+}
