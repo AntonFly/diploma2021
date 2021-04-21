@@ -23,17 +23,8 @@ class ProjectPage extends React.Component {
                 region: region,
                 error: !region
             });
-            loadAllRegionContracts(code,this)
+            getRegionContracts({region: code},this).catch(e => console.log(e))
         });
-    }
-
-    impFun(){
-        let res="";
-        for(let i=1; i<=100; i++ ){
-           res+= "reg_"+i+","
-
-        }
-        return res
     }
 
     render() {
@@ -76,16 +67,6 @@ class ProjectPage extends React.Component {
             </div>
         );
     }
-}
-
-function loadAllRegionContracts(regionCode, state){
-    state.setState({isFetching: true})
-    getRegionContracts({region: regionCode})
-        .then(result => state.setState(
-            {contracts: result,
-                isFetching: false
-            }
-        ))
 }
 
 export default ProjectPage;
