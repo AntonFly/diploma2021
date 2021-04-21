@@ -6,23 +6,21 @@ import regions from '../../data/regions.json'
 function Search_field() {
     let history = useHistory();
 
-    function handleClick() {
-        history.push("/region/1");
+    function handleEnter(region) {
+        let url = "/region/"+region
+        history.push(url);
     }
 
     return (
         <Autocomplete
             id="combo-box-demo"
             options={regions}
-            getOptionLabel={(option) => option.region}
-            style={{ width: 300 }}
+            getOptionLabel={(option) => option.region+" "+option.code}
+            style={{ width: 800 }}
             renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
-            // size="large"
             //TODO переход на сраницу
             onChange={(event, region) =>{
-                alert("enter");
-                handleClick()
-                // this.props.history.push('/region/1');
+                handleEnter(region.code)
             }
             }
         />

@@ -1,0 +1,10 @@
+
+.region_flag{
+    width: 320px;
+    height: 180px;
+
+}
+.region_header{
+    display: flex;
+    padding-top: 7px;
+}

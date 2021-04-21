@@ -1,12 +1,18 @@
 import React from 'react';
 import regions from "../../data/regions.json";
+import flag_sources from "../../data/flag-sources";
+import getRegionContracts from "../../backend/getRegionContracts";
+import "./style.css"
 
 import '../../index.css';
 
 class ProjectPage extends React.Component {
     state = {
         project: null,
-        error: false
+        error: false,
+        contracts: null,
+        isFetching: false
+
     };
 
     componentDidMount() {
@@ -17,34 +23,48 @@ class ProjectPage extends React.Component {
                 region: region,
                 error: !region
             });
-        }, 100);
+            loadAllRegionContracts(code,this)
+        });
+    }
+
+    impFun(){
+        let res="";
+        for(let i=1; i<=100; i++ ){
+           res+= "reg_"+i+","
+
+        }
+        return res
     }
 
     render() {
-        const { region, error } = this.state;
+        const { region, error, contracts, isFetching } = this.state;
         if (error) {
             alert(error)
             return <div className='container'>Что-то пошло не так...</div>;
         }
-        if (!region) return <div className='container'>Loading...</div>;
 
+        //TODO анимация загрузки
+        if (!region || isFetching) return <div className='container'>Loading...</div>;
         return (
             <div className='project'>
                 <div className='container'>
-                    <img
-                        className='project__screenshot'
-                        src={region.screenshot}
+                    <div className='region_header'>
+                        <img
+                        className='region_flag'
+                        src={flag_sources[region.code].default}
                         alt={region.region}
-                    />
+                        />
+                        <h1 className='region__title'>{region.region}<br/>
+                        Код региона: {region.code}
+                        </h1>
+                    </div>
+                        <hr/>
 
-                    <h1 className='region__title'>{region.region}</h1>
-
-                    <p className='project__description'>
-                        {region.description}
+                    <p className='region_main_info'>
                     </p>
 
                     <div className='project__stack'>
-                        {/*{project.stack.join(', ')}*/}
+                        {console.log(contracts)}
                     </div>
 
                     <div>
@@ -56,6 +76,16 @@ class ProjectPage extends React.Component {
             </div>
         );
     }
+}
+
+function loadAllRegionContracts(regionCode, state){
+    state.setState({isFetching: true})
+    getRegionContracts({region: regionCode})
+        .then(result => state.setState(
+            {contracts: result,
+                isFetching: false
+            }
+        ))
 }
 
 export default ProjectPage;
