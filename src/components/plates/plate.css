@@ -1,0 +1,37 @@
+.plate{
+    display: flex ;
+    border: 2px solid lightgrey;
+    border-radius: 20px;
+    width: 100%;
+    margin: 0 0 5px 0;
+
+}
+
+.plate_part {
+    padding: 24px 24px 16px ;
+}
+
+.plate_part_1{
+    padding: 24px 24px 16px ;
+    width: 75%;
+}
+
+.plate_part_2{
+    padding: 24px 24px 16px ;
+    width: 25%;
+}
+
+
+ .header_text{
+     font-weight: 300;
+     font-size: 80%;
+
+}
+
+ .products{
+     display: none
+ }
+
+ .header_text:checked .products{
+     display: block;
+ }

@@ -1,10 +1,19 @@
 
-.region_flag{
-    width: 320px;
-    height: 180px;
 
-}
-.region_header{
+.parameters_fields{
     display: flex;
-    padding-top: 7px;
+    padding: 2px;
 }
+span{
+    margin: 5px;
+    align-self: center;
+}
+
+.checkboxes{
+    margin: 5px;
+}
+
+.search_button{
+    margin-left: auto;
+}
+

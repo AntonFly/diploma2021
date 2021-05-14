@@ -1,72 +1,101 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import regions from "../../data/regions.json";
-import flag_sources from "../../data/flag-sources";
 import getRegionContracts from "../../backend/getRegionContracts";
-import "./style.css"
+import searchRegionContracts from "../../backend/searchRegionContracts";
+import "./style.css";
 
-import '../../index.css';
+import "../../index.css";
+import { mainRegionInfo } from "../../components/main_region_info/mainRegionInfo";
+import Tabs, { useStyles } from "../../components/tabs/tabs";
+import { PreLoading } from "../../components/loading_animation/loading_animation";
+import getRegionGrant from "../../backend/getRegionGrant";
+import Year_box from "../../components/options/year_box";
+import { Context } from "./Context.js";
+import Checkboxes from "../../components/options/check_box";
+import RangeSlider from "../../components/options/price_slider";
+import Search_button from "../../components/options/search_button";
+import getRegionDebt from "../../backend/getRegionDebt";
+import getRegionIncome from "../../backend/getRegionIncome";
 
-class ProjectPage extends React.Component {
-    state = {
-        project: null,
-        error: false,
-        contracts: null,
-        isFetching: false
+const year = String(new Date().getFullYear());
 
-    };
+function ProjectPage() {
+  const [context, setContext] = useState({
+    year: year,
+    fz: "",
+    price: [1, 16],
+    load: 0,
+  });
 
-    componentDidMount() {
-        const code = this.props.match.params.code;
-        setTimeout(() => {
-            const region = regions.find(region => region.code === code);
-            this.setState({
-                region: region,
-                error: !region
-            });
-            getRegionContracts({region: code},this).catch(e => console.log(e))
-        });
-    }
+  const classes = useStyles();
+  const [contracts, setContracts] = useState();
+  const [grants, setGrants] = useState();
+  const [dept, setDept] = useState();
+  const [income, setIncome] = useState();
 
-    render() {
-        const { region, error, contracts, isFetching } = this.state;
-        if (error) {
-            alert(error)
-            return <div className='container'>Что-то пошло не так...</div>;
-        }
+  let region;
+  let error = 0;
+  const code = useParams().code;
+  region = regions.find((region) => region.code === code);
+  useEffect(() => {
+    getRegionDebt().then((result) => {
+      setDept(result);
+    });
+    getRegionIncome().then((result) => {
+      setIncome(result);
+    });
+    getRegionContracts({
+      region: code,
+      year: context.year,
+      pricerange: context.price,
+      fz: context.fz,
+      count: 3,
+      sort: "-price",
+    })
+      .then((result) => setContracts(result))
+      .catch((e) => console.log(e));
+    getRegionGrant({
+      pricerange: context.price,
+      region: code,
+      year: context.year,
+    })
+      .then((result) => setGrants(result))
+      .catch((e) => console.log(e));
+  }, [context.load]);
 
-        //TODO анимация загрузки
-        if (!region || isFetching) return <div className='container'>Loading...</div>;
-        return (
-            <div className='project'>
-                <div className='container'>
-                    <div className='region_header'>
-                        <img
-                        className='region_flag'
-                        src={flag_sources[region.code].default}
-                        alt={region.region}
-                        />
-                        <h1 className='region__title'>{region.region}<br/>
-                        Код региона: {region.code}
-                        </h1>
-                    </div>
-                        <hr/>
-
-                    <p className='region_main_info'>
-                    </p>
-
-                    <div className='project__stack'>
-                        {console.log(contracts)}
-                    </div>
-
-                    <div>
-                        <a href={region.link} className='project__link'>
-                            Ссылка на проект
-                        </a>
-                    </div>
-                </div>
+  if (error) {
+    alert(error);
+    return <div className="container">Что-то пошло не так...</div>;
+  }
+  if (region && contracts && grants)
+    return (
+      <div className="project">
+        <div className="container">
+          {mainRegionInfo({ dept: dept, income: income }, region)}
+          <hr />
+          <Context.Provider value={[context, setContext]}>
+            <div className="parameters_fields">
+              <span>Год:</span>
+              <Year_box />
+              <div className="checkboxes">
+                <Checkboxes />
+              </div>
+              <RangeSlider />
+              <div className="search_button">
+                <Search_button />
+              </div>
             </div>
-        );
-    }
+            {Tabs({
+              classes,
+              contracts: contracts.contracts,
+              grants: grants,
+            })}
+          </Context.Provider>
+        </div>
+      </div>
+    );
+  else return PreLoading();
 }
 
 export default ProjectPage;
