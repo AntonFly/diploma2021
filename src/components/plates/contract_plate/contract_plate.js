@@ -1,19 +1,17 @@
 import { Link } from "react-router-dom";
 import "../plate.css";
 
-export function Contract_plate(contract) {
+export function Contract_plate(contract, index) {
   if (!contract) return null;
 
   const contractURL = contract.contructURL;
   let contLink = "/contract/" + contract.regNum;
   let orgLink = "organization" + contract.customer.refNum;
-  let product;
+  let product = `/product${contract.regionCode}/${index}`;
   let date = "";
   contract.signDate
     ? (date = new Date(contract.signDate).toLocaleDateString())
     : (date = new Date(contract.publishDate).toLocaleDateString());
-
-  console.log(contract);
 
   return (
     <div className="plate">
@@ -25,12 +23,12 @@ export function Contract_plate(contract) {
         <Link to={contLink}>
           {contract.customer.fullName} <br />{" "}
         </Link>
-        <span className="header_text" id="product">
-          {" "}
-          Предмет{" "}
-        </span>{" "}
+        <Link to={product}>
+          <span className="header_text" id="product">
+            Предмет{" "}
+          </span>{" "}
+        </Link>
         <br />
-        {product}
         <br />
       </div>
       <hr />

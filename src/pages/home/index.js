@@ -21,8 +21,6 @@ function App() {
     });
   }, []);
 
-  console.log(contracts);
-
   if (contracts)
     return (
       <div className="app">
@@ -31,7 +29,7 @@ function App() {
             <Search_field />
             <div className="plate1">
               {contracts.contracts.data.map((item, index) => {
-                if (index < 3) return Contract_plate(item);
+                if (index < 3) return Contract_plate(item, index);
               })}
             </div>
             {Plug()}

@@ -3,6 +3,7 @@
 .parameters_fields{
     display: flex;
     padding: 2px;
+    z-index: -99;
 }
 span{
     margin: 5px;
@@ -15,5 +16,9 @@ span{
 
 .search_button{
     margin-left: auto;
+}
+
+.sort_title{
+    margin-left: 20px;
 }
 

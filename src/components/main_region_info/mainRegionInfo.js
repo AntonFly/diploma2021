@@ -4,8 +4,6 @@ import getRegionContracts from "../../backend/getRegionContracts";
 import "./style.css";
 
 export function mainRegionInfo(props, region) {
-  console.log(props.dept);
-
   const dept = props.dept
     ? props.dept.map((item) => {
         if (item.f1 === region.region) return item.f7;

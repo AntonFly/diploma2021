@@ -9,6 +9,8 @@ import Box from "@material-ui/core/Box";
 import { Contract_plate } from "../plates/contract_plate/contract_plate";
 import { Context } from "../../pages/project/Context";
 import { Gran_plate } from "../plates/grand_plate/grant_plate";
+import { Customer_plate } from "../plates/customer_plate/customer_plate";
+import { Suppliers_plate } from "../plates/suppliers_plate/suppliers_plate";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,7 +47,6 @@ function a11yProps(index) {
 }
 
 function grant(grants) {
-  console.log(grants);
   if (grants.length === 0)
     return (
       <div>Нет субсидий зарегистрированных или обновленных в этом году</div>
@@ -60,9 +61,8 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SimpleTabs(props) {
-  const { classes, contracts, grants } = props;
+  const { classes, contracts, grants, customers, year, suppliers } = props;
   const [value, setValue] = useState(0);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -83,17 +83,26 @@ export default function SimpleTabs(props) {
       <TabPanel value={value} index={0}>
         Всего контрактов с заданными параметрами: {contracts.total}
         {contracts.data.map((item, index) => {
-          if (index < 3) return Contract_plate(item);
+          if (index < 3) return Contract_plate(item, index);
         })}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {grant(grants.items)}
+        Всего cубсидий с заданными параметрами: {grants.total}
         {grants.items.map((item, index, grants) => {
-          if (index < 1) return Gran_plate(item);
+          if (index < 3) return Gran_plate(item);
         })}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        Всего заказчиков с заданными параметрами: {customers.total}
+        {customers.data.map((item, index) => {
+          if (index < 3) return Customer_plate(item);
+        })}
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        Всего поставщиков с заданными параметрами: {suppliers.total}
+        {suppliers.data.map((item, index) => {
+          if (index < 3) return Suppliers_plate(item, year);
+        })}
       </TabPanel>
     </div>
   );

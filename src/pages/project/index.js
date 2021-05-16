@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import regions from "../../data/regions.json";
 import getRegionContracts from "../../backend/getRegionContracts";
 import searchRegionContracts from "../../backend/searchRegionContracts";
@@ -17,6 +17,10 @@ import RangeSlider from "../../components/options/price_slider";
 import Search_button from "../../components/options/search_button";
 import getRegionDebt from "../../backend/getRegionDebt";
 import getRegionIncome from "../../backend/getRegionIncome";
+import getRegionCustomer from "../../backend/getRegionCustomer";
+import Sort_box from "../../components/options/sort_box";
+import getRegionSuppliers from "../../backend/getRegionSuppliers";
+import Products from "../../components/products/products";
 
 const year = String(new Date().getFullYear());
 
@@ -26,6 +30,7 @@ function ProjectPage() {
     fz: "",
     price: [1, 16],
     load: 0,
+    sort: "-contractsSum",
   });
 
   const classes = useStyles();
@@ -33,10 +38,14 @@ function ProjectPage() {
   const [grants, setGrants] = useState();
   const [dept, setDept] = useState();
   const [income, setIncome] = useState();
+  const [customers, setCustomers] = useState();
+  const [suppliers, setSuppliers] = useState();
 
   let region;
   let error = 0;
   const code = useParams().code;
+  const indexP = useParams().index;
+  const product = useParams();
   region = regions.find((region) => region.code === code);
   useEffect(() => {
     getRegionDebt().then((result) => {
@@ -51,7 +60,7 @@ function ProjectPage() {
       pricerange: context.price,
       fz: context.fz,
       count: 3,
-      sort: "-price",
+      sort: context.sort,
     })
       .then((result) => setContracts(result))
       .catch((e) => console.log(e));
@@ -59,16 +68,48 @@ function ProjectPage() {
       pricerange: context.price,
       region: code,
       year: context.year,
+      sort: context.sort,
     })
       .then((result) => setGrants(result))
       .catch((e) => console.log(e));
+    getRegionCustomer({
+      region: code,
+      fz: context.fz,
+      count: 3,
+      sort: context.sort,
+    })
+      .then((result) => setCustomers(result))
+      .catch((e) => {
+        console.log(e);
+        setCustomers({ customers: { total: 0, data: [] } });
+      });
+    getRegionSuppliers({
+      region: code,
+      count: 3,
+      sort: context.sort,
+    })
+      .then((result) => setSuppliers(result))
+      .catch((e) => {
+        console.log(e);
+      });
   }, [context.load]);
+
+  console.log(contracts);
+
+  if (/^\/product/.test(useHistory().location.pathname) && contracts)
+    return (
+      <div className="project">
+        <div className="container">
+          {Products(contracts.contracts.data[indexP])}
+        </div>
+      </div>
+    );
 
   if (error) {
     alert(error);
     return <div className="container">Что-то пошло не так...</div>;
   }
-  if (region && contracts && grants)
+  if (region && contracts && grants && customers && suppliers)
     return (
       <div className="project">
         <div className="container">
@@ -82,6 +123,9 @@ function ProjectPage() {
                 <Checkboxes />
               </div>
               <RangeSlider />
+              <br />
+              <span className="sort_title">Сортировать заказчиков по:</span>
+              <Sort_box />
               <div className="search_button">
                 <Search_button />
               </div>
@@ -90,6 +134,9 @@ function ProjectPage() {
               classes,
               contracts: contracts.contracts,
               grants: grants,
+              customers: customers.customers,
+              suppliers: suppliers.suppliers,
+              year: context.year,
             })}
           </Context.Provider>
         </div>

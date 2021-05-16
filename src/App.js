@@ -7,9 +7,6 @@ import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import HomePage from "./pages/home";
 import ProjectPage from "./pages/project";
 import Footer from "./components/footer/footer";
-import { Link } from "@material-ui/core";
-import getRegionDebt from "./backend/getRegionDebt";
-import getRegionIncome from "./backend/getRegionIncome";
 
 class App extends React.Component {
   render() {
@@ -51,6 +48,7 @@ class App extends React.Component {
                 return null;
               }}
             />
+            <Route exact path="/product:code/:index" component={ProjectPage} />
             <Route exact path="/" component={HomePage} />
             <Redirect to="/" />
           </Switch>

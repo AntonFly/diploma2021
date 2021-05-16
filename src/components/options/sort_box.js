@@ -1,28 +1,29 @@
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import years from "../../data/years.json";
+import sort from "../../data/sort.json";
 import { Context } from "../../pages/project/Context";
 import { useContext } from "react";
 
-function Year_box() {
+function Sort_box() {
   const [context, setContext] = useContext(Context);
-  const defaultYear = years.pop();
-  years.push(defaultYear);
+  const defaultSort = sort.pop();
+  sort.push(defaultSort);
   return (
     <Autocomplete
       id="combo-box-demo"
-      options={years}
-      getOptionLabel={(option) => option.year}
-      style={{ width: 125 }}
-      defaultValue={defaultYear}
+      options={sort}
+      getOptionLabel={(option) => option.name}
+      style={{ width: 300, padding: 10 }}
+      defaultValue={defaultSort}
       renderInput={(params) => (
         <TextField {...params} label="" variant="outlined" />
       )}
-      onChange={(event, year) => {
-        setContext({ ...context, year: year.year });
+      onChange={(event, sort) => {
+        setContext({ ...context, sort: sort.sort });
+        console.log(context);
       }}
     />
   );
 }
 
-export default Year_box;
+export default Sort_box;

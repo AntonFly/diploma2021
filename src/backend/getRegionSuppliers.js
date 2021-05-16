@@ -1,4 +1,4 @@
-export default async function getRegionContracts(props) {
+export default async function getRegionSuppliers(props) {
   let y = props.year;
   let fz = "";
   let region = "";
@@ -6,10 +6,9 @@ export default async function getRegionContracts(props) {
   let year = "";
   let count = "";
   let sort = "";
-  if (props.sort === "contractsSum") sort = "&sort=price";
-  else sort = "&sort=-price";
+  if (props.sort) sort = "&sort=" + props.sort;
   if (props.count) count = "&perpage=" + props.count;
-  if (props.region) region = "customerregion=" + props.region;
+  if (props.region) region = "regioncode=" + props.region;
   if (props.pricerange)
     pricerange =
       "&pricerange=0-" +
@@ -18,7 +17,7 @@ export default async function getRegionContracts(props) {
   if (props.year) year = "&daterange=01.01." + y + "-31.12." + y;
 
   return await fetch(
-    `https://api.spending.gov.ru/v1/contracts/select/?${region}${pricerange}${fz}${year}${count}${sort}`,
+    `http://openapi.clearspending.ru/restapi/v3/suppliers/select/?${region}${sort}${count}`,
     {
       method: "get",
       headers: {

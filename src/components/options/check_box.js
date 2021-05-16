@@ -13,8 +13,6 @@ export default function Checkboxes() {
   const [context, setContext] = useContext(Context);
   const [value, setValue] = React.useState("2");
 
-  console.log(context);
-
   const handleChange = (event) => {
     setValue(event.target.value);
     setContext({ ...context, fz: event.target.name });
